@@ -20,6 +20,12 @@ export default function Home() {
   const [miscExpenses, setMiscExpenses] = useState<number>(0);
   const [loanBalance, setLoanBalance] = useState<number>(0);
 
+  // New States
+  const [loanStartPeriod, setLoanStartPeriod] = useState<'2014-2021' | '2022-'>('2022-');
+  const [socialInsuranceMode, setSocialInsuranceMode] = useState<'auto' | 'manual'>('auto');
+  const [socialInsuranceManualAmount, setSocialInsuranceManualAmount] = useState<number>(0);
+  const [medicalExpenses, setMedicalExpenses] = useState<number>(0);
+
   const idecoYearly = idecoMonthly * 12;
 
   // Current Scenario
@@ -35,9 +41,14 @@ export default function Home() {
       earthquakeInsurancePremium: earthquakeInsurance,
       miscIncome,
       miscExpenses,
-      loanBalanceYearEnd: loanBalance
+      loanBalanceYearEnd: loanBalance,
+      // New Inputs
+      loanStartPeriod,
+      socialInsuranceMode,
+      socialInsuranceManualAmount,
+      medicalExpenses
     });
-  }, [income, idecoYearly, furusato, hasSpouse, numDependentsGen, numDependentsSpecific, lifeInsurance, earthquakeInsurance, miscIncome, miscExpenses, loanBalance]);
+  }, [income, idecoYearly, furusato, hasSpouse, numDependentsGen, numDependentsSpecific, lifeInsurance, earthquakeInsurance, miscIncome, miscExpenses, loanBalance, loanStartPeriod, socialInsuranceMode, socialInsuranceManualAmount, medicalExpenses]);
 
   // Base Scenario (No Tax Saving measures)
   const baseResult = useMemo(() => {
@@ -52,15 +63,16 @@ export default function Home() {
       earthquakeInsurancePremium: earthquakeInsurance,
       miscIncome,
       miscExpenses,
-      loanBalanceYearEnd: 0
+      loanBalanceYearEnd: 0,
+      loanStartPeriod: '2022-', // Default
+      socialInsuranceMode, // Keep same mode to compare apple to apple? Usually 'Savings' means 'Measures we took'. 
+      // If we change manual input in base, it's fair.
+      socialInsuranceManualAmount,
+      medicalExpenses // Keep consistent
     });
-  }, [income, hasSpouse, numDependentsGen, numDependentsSpecific, lifeInsurance, earthquakeInsurance, miscIncome, miscExpenses]);
+  }, [income, hasSpouse, numDependentsGen, numDependentsSpecific, lifeInsurance, earthquakeInsurance, miscIncome, miscExpenses, socialInsuranceMode, socialInsuranceManualAmount, medicalExpenses]);
 
   const taxSavings = (baseResult.incomeTax + baseResult.residentTax) - (result.incomeTax + result.residentTax);
-  const effectiveFurusatoCost = Math.max(0, furusato - 2000); // Amount that "buys" gifts
-  // Note: Tax savings from Furusato should roughly equal (Furusato - 2000). 
-  // If TaxSavings < (Furusato - 2000), it means they over-contributed (hit the limit).
-  // But for simple "Savings" display, let's just show total tax reduction.
 
   return (
     <main className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -72,7 +84,7 @@ export default function Home() {
             <Calculator className="text-white w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">日本所得税・住民税シミュレーター</h1>
+            <h1 className="text-2xl font-bold text-slate-800">日本所得税・住民税シミュレーター (2025年改正対応)</h1>
             <p className="text-slate-500 text-sm">年収・扶養・保険料・住宅ローンなどを入力して手取りと税金を概算</p>
           </div>
         </div>
@@ -90,6 +102,11 @@ export default function Home() {
           miscIncome={miscIncome} setMiscIncome={setMiscIncome}
           miscExpenses={miscExpenses} setMiscExpenses={setMiscExpenses}
           loanBalance={loanBalance} setLoanBalance={setLoanBalance}
+          // New Props
+          loanStartPeriod={loanStartPeriod} setLoanStartPeriod={setLoanStartPeriod}
+          socialInsuranceMode={socialInsuranceMode} setSocialInsuranceMode={setSocialInsuranceMode}
+          socialInsuranceManualAmount={socialInsuranceManualAmount} setSocialInsuranceManualAmount={setSocialInsuranceManualAmount}
+          medicalExpenses={medicalExpenses} setMedicalExpenses={setMedicalExpenses}
         />
 
         {/* Tax Saving Alert */}
@@ -137,15 +154,31 @@ export default function Home() {
                 <span className="font-medium text-slate-800">-{new Intl.NumberFormat('ja-JP').format(result.employmentDeduction)} 円</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                <span className="text-slate-500">社会保険料（概算）</span>
+                <span className="text-slate-500">社会保険料 ({socialInsuranceMode === 'auto' ? '概算' : '手入力'})</span>
                 <span className="font-medium text-slate-800">-{new Intl.NumberFormat('ja-JP').format(result.socialInsurance)} 円</span>
               </div>
+
+              {result.medicalDeduction > 0 && (
+                <div className="flex justify-between items-center py-2 border-b border-slate-50">
+                  <span className="text-slate-500">医療費控除</span>
+                  <span className="font-medium text-slate-800">-{new Intl.NumberFormat('ja-JP').format(result.medicalDeduction)} 円</span>
+                </div>
+              )}
+
               <div className="flex justify-between items-center py-2 border-b border-slate-50">
                 <span className="text-slate-500">基礎控除 (所得税/住民税)</span>
                 <span className="font-medium text-slate-800">
                   {new Intl.NumberFormat('ja-JP').format(result.paramBasicExemptionIncome)} / {new Intl.NumberFormat('ja-JP').format(result.paramBasicExemptionResident)} 円
                 </span>
               </div>
+
+              {result.adjustmentDeduction > 0 && (
+                <div className="flex justify-between items-center py-2 border-b border-slate-50">
+                  <span className="text-slate-500">住民税調整控除</span>
+                  <span className="font-medium text-slate-800">-{new Intl.NumberFormat('ja-JP').format(result.adjustmentDeduction)} 円 (住民税額より控除)</span>
+                </div>
+              )}
+
               <div className="flex justify-between items-center py-2 border-b border-slate-50">
                 <span className="text-slate-500">課税所得 (所得税)</span>
                 <span className="font-medium text-slate-800">{new Intl.NumberFormat('ja-JP').format(result.taxableIncome)} 円</span>

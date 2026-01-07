@@ -19,9 +19,17 @@ interface InputSectionProps {
     setMiscIncome: (val: number) => void;
     miscExpenses: number;
     setMiscExpenses: (val: number) => void;
-    // New Prop
     loanBalance: number;
     setLoanBalance: (val: number) => void;
+    // New Props
+    loanStartPeriod: '2014-2021' | '2022-';
+    setLoanStartPeriod: (val: '2014-2021' | '2022-') => void;
+    socialInsuranceMode: 'auto' | 'manual';
+    setSocialInsuranceMode: (val: 'auto' | 'manual') => void;
+    socialInsuranceManualAmount: number;
+    setSocialInsuranceManualAmount: (val: number) => void;
+    medicalExpenses: number;
+    setMedicalExpenses: (val: number) => void;
 }
 
 export default function InputSection({
@@ -30,7 +38,11 @@ export default function InputSection({
     numDependentsSpecific, setNumDependentsSpecific,
     lifeInsurance, setLifeInsurance, earthquakeInsurance, setEarthquakeInsurance,
     miscIncome, setMiscIncome, miscExpenses, setMiscExpenses,
-    loanBalance, setLoanBalance
+    loanBalance, setLoanBalance,
+    loanStartPeriod, setLoanStartPeriod,
+    socialInsuranceMode, setSocialInsuranceMode,
+    socialInsuranceManualAmount, setSocialInsuranceManualAmount,
+    medicalExpenses, setMedicalExpenses
 }: InputSectionProps) {
     return (
         <div className="space-y-6">
@@ -78,7 +90,7 @@ export default function InputSection({
                                     onChange={(e) => setHasSpouse(e.target.checked)}
                                     className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
                                 />
-                                <span className="text-sm font-medium text-slate-700">配偶者あり (収入103万以下想定)</span>
+                                <span className="text-sm font-medium text-slate-700">配偶者あり (収入160万以下/所得税非課税想定)</span>
                             </label>
 
                             <div>
@@ -104,8 +116,44 @@ export default function InputSection({
                         </div>
                     </div>
 
-                    {/* Insurance */}
-                    <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-slate-50">
+                    {/* Social Insurance (New) */}
+                    <div className="lg:col-span-3 pb-4 border-b border-slate-50">
+                        <h3 className="text-sm font-bold text-slate-900 mb-3">社会保険料</h3>
+                        <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex items-center bg-slate-50 rounded-lg p-1 border border-slate-200">
+                                <button
+                                    onClick={() => setSocialInsuranceMode('auto')}
+                                    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${socialInsuranceMode === 'auto' ? 'bg-white shadow-sm text-blue-600 font-medium' : 'text-slate-500 hover:text-slate-700'}`}
+                                >
+                                    概算 (15%)
+                                </button>
+                                <button
+                                    onClick={() => setSocialInsuranceMode('manual')}
+                                    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${socialInsuranceMode === 'manual' ? 'bg-white shadow-sm text-blue-600 font-medium' : 'text-slate-500 hover:text-slate-700'}`}
+                                >
+                                    手入力
+                                </button>
+                            </div>
+
+                            {socialInsuranceMode === 'manual' && (
+                                <div className="relative animate-in fade-in slide-in-from-left-2">
+                                    <input
+                                        type="number"
+                                        value={socialInsuranceManualAmount}
+                                        onChange={(e) => setSocialInsuranceManualAmount(Number(e.target.value))}
+                                        className="block w-40 pl-3 pr-10 py-2 border-gray-200 rounded-lg text-sm bg-slate-50"
+                                        placeholder="入力してください"
+                                    />
+                                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span className="text-gray-500 text-xs">円</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Insurance & Medical */}
+                    <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6 pb-4 border-b border-slate-50">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">生命保険料 (年間支払額)</label>
                             <div className="relative">
@@ -134,26 +182,69 @@ export default function InputSection({
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Housing Loan */}
-                    <div className="lg:col-span-3 pb-4 border-b border-slate-50">
-                        <h3 className="text-sm font-bold text-slate-900 mb-2">住宅ローン控除</h3>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">年末借入残高</label>
-                            <div className="relative w-full max-w-sm">
+                            <label className="block text-sm font-medium text-slate-700 mb-2">医療費 (年間総額)</label>
+                            <div className="relative">
                                 <input
                                     type="number"
-                                    value={loanBalance}
-                                    onChange={(e) => setLoanBalance(Number(e.target.value))}
+                                    value={medicalExpenses}
+                                    onChange={(e) => setMedicalExpenses(Number(e.target.value))}
                                     className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
-                                    placeholder="例: 30000000"
+                                    placeholder="0"
                                 />
                                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                                     <span className="text-gray-500 text-sm">円</span>
                                 </div>
                             </div>
-                            <p className="text-xs text-slate-400 mt-1">※ 借入限度額3,000万円・控除率0.7%で計算します（一般新築等）</p>
+                            <p className="text-[10px] text-slate-400 mt-1">※ 10万円または所得の5%を超える分が控除</p>
+                        </div>
+                    </div>
+
+                    {/* Housing Loan */}
+                    <div className="lg:col-span-3 pb-4 border-b border-slate-50">
+                        <h3 className="text-sm font-bold text-slate-900 mb-2">住宅ローン控除</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">年末借入残高</label>
+                                <div className="relative w-full">
+                                    <input
+                                        type="number"
+                                        value={loanBalance}
+                                        onChange={(e) => setLoanBalance(Number(e.target.value))}
+                                        className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
+                                        placeholder="例: 30000000"
+                                    />
+                                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                        <span className="text-gray-500 text-sm">円</span>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-slate-400 mt-1">※ 借入限度額3,000万円・控除率0.7%で計算します</p>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">入居開始時期</label>
+                                <div className="flex flex-col space-y-2">
+                                    <label className="flex items-center space-x-3 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="loanStartPeriod"
+                                            checked={loanStartPeriod === '2022-'}
+                                            onChange={() => setLoanStartPeriod('2022-')}
+                                            className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-slate-700">2022年1月以降 (現行・上限9.75万)</span>
+                                    </label>
+                                    <label className="flex items-center space-x-3 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="loanStartPeriod"
+                                            checked={loanStartPeriod === '2014-2021'}
+                                            onChange={() => setLoanStartPeriod('2014-2021')}
+                                            className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-slate-700">2014年4月〜2021年12月 (旧・上限13.65万)</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
