@@ -5,6 +5,8 @@ import { calculateTaxes } from '@/utils/taxCalculations';
 import InputSection from '@/components/InputSection';
 import SummaryCards from '@/components/SummaryCards';
 import LifePlanSection from '@/components/LifePlanSection';
+import OtherTaxSection from '@/components/OtherTaxSection';
+import { OtherTaxInputs, calculateOtherTaxes } from '@/utils/otherTaxCalculations';
 import TaxChart from '@/components/TaxChart';
 import { Calculator } from 'lucide-react';
 
@@ -26,6 +28,17 @@ export default function Home() {
   const [socialInsuranceMode, setSocialInsuranceMode] = useState<'auto' | 'manual'>('auto');
   const [socialInsuranceManualAmount, setSocialInsuranceManualAmount] = useState<number>(0);
   const [medicalExpenses, setMedicalExpenses] = useState<number>(0);
+
+  // Other Tax States
+  const [otherTaxInputs, setOtherTaxInputs] = useState<OtherTaxInputs>({
+    monthlyConsumptionSpending: 0,
+    dailyTobaccoSticks: 0,
+    monthlyGasolineCost: 0,
+    yearlyPropertyTax: 0,
+    carCategory: 'none',
+    inheritanceAssets: 0,
+    inheritanceHeirs: 1
+  });
 
   const idecoYearly = idecoMonthly * 12;
 
@@ -73,6 +86,10 @@ export default function Home() {
     });
   }, [income, hasSpouse, numDependentsGen, numDependentsSpecific, lifeInsurance, earthquakeInsurance, miscIncome, miscExpenses, socialInsuranceMode, socialInsuranceManualAmount, medicalExpenses]);
 
+  const otherTaxResult = useMemo(() => {
+    return calculateOtherTaxes(otherTaxInputs);
+  }, [otherTaxInputs]);
+
   const taxSavings = (baseResult.incomeTax + baseResult.residentTax) - (result.incomeTax + result.residentTax);
 
   return (
@@ -110,6 +127,9 @@ export default function Home() {
           medicalExpenses={medicalExpenses} setMedicalExpenses={setMedicalExpenses}
         />
 
+        {/* Other Taxes Input */}
+        <OtherTaxSection inputs={otherTaxInputs} setInputs={setOtherTaxInputs} />
+
         {/* Tax Saving Alert */}
         {(idecoYearly > 0 || furusato > 0 || loanBalance > 0) && (
           <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl p-6 text-white shadow-lg mb-8 animate-in fade-in slide-in-from-bottom-4">
@@ -134,7 +154,10 @@ export default function Home() {
         )}
 
         {/* Summary Cards */}
-        <SummaryCards data={result} />
+        <SummaryCards data={{
+          ...result,
+          totalOtherTax: otherTaxResult.totalOtherTax
+        }} />
 
         {/* Life Plan Advice Section */}
         <LifePlanSection currentInputs={{
@@ -161,7 +184,7 @@ export default function Home() {
           <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
             <h3 className="text-lg font-semibold text-slate-800 mb-4 self-start">内訳グラフ</h3>
             <div className="w-full max-w-[280px]">
-              <TaxChart data={result} />
+              <TaxChart data={result} otherTaxData={otherTaxResult} />
             </div>
           </div>
 

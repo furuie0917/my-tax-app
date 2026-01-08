@@ -30,18 +30,24 @@ interface SummaryCardsProps {
         incomeTax: number;
         residentTax: number;
         socialInsurance: number;
+        totalOtherTax?: number;
     }
 }
 
 export default function SummaryCards({ data }: SummaryCardsProps) {
+    const totalOther = data.totalOtherTax || 0;
+    const totalTax = data.incomeTax + data.residentTax + totalOther; // Excluding Social Insurance from "Tax" label usually, but commonly "Tax & Social" is burden. 
+    // "Total Annual Tax" usually implies taxes. Social Insurance is technically premium but acts like tax.
+    // Let's explicitly show "Total Tax (Inc + Res + Other)".
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <SummaryCard
                 title="手取り年収"
-                amount={data.netIncome}
+                amount={data.netIncome - totalOther}
                 icon={Wallet}
                 color="bg-blue-500"
-                subtext="実際に使える金額"
+                subtext="全ての税金を引いた額"
             />
             <SummaryCard
                 title="社会保険料"
@@ -49,6 +55,13 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
                 icon={HeartPulse}
                 color="bg-amber-500"
                 subtext="健康保険・厚生年金など"
+            />
+            <SummaryCard
+                title="税金総額 (年)"
+                amount={totalTax}
+                icon={Landmark}
+                color="bg-purple-600"
+                subtext={`所得・住民税 + その他 ${new Intl.NumberFormat('ja-JP').format(totalOther)}円`}
             />
             <SummaryCard
                 title="所得税"
