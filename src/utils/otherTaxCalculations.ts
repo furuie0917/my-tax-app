@@ -1,5 +1,7 @@
 export interface OtherTaxInputs {
-    monthlyConsumptionSpending: number; // Consumption Tax Base
+    monthlyConsumptionSpending: number; // Consumption Tax Base (Food/Misc)
+    monthlyUtilitiesCost: number;       // New: Utilities (Electricity/Gas/Water)
+    monthlyInternetCost: number;        // New: Internet & Smartphone
     dailyTobaccoSticks: number;        // Tobacco Tax Base
     monthlyGasolineCost: number;       // Gasoline Tax Base
     yearlyPropertyTax: number;         // Property Tax (Direct Input)
@@ -11,7 +13,9 @@ export interface OtherTaxInputs {
 }
 
 export interface OtherTaxResult {
-    consumptionTax: number;
+    consumptionTax: number; // General
+    utilitiesTax: number;   // New
+    internetTax: number;    // New
     tobaccoTax: number;
     gasolineTax: number;
     propertyTax: number;
@@ -36,9 +40,16 @@ export const CAR_TAX_RATES: Record<string, number> = {
 };
 
 export const calculateOtherTaxes = (inputs: OtherTaxInputs): OtherTaxResult => {
-    // 1. Consumption Tax
+    // 1. Consumption Tax (General: Food/Misc)
     // Assumed effective rate 9% on the spending amount
     const consumptionTax = (inputs.monthlyConsumptionSpending * 12) * 0.09;
+
+    // 1b. Utilities Tax (10%)
+    // Assuming input is Tax-Inclusive billing amount. Tax = Amount * 10/110
+    const utilitiesTax = (inputs.monthlyUtilitiesCost * 12) * (10 / 110);
+
+    // 1c. Internet/Phone Tax (10%)
+    const internetTax = (inputs.monthlyInternetCost * 12) * (10 / 110);
 
     // 2. Tobacco Tax
     // 15.2 yen per stick
@@ -101,10 +112,12 @@ export const calculateOtherTaxes = (inputs: OtherTaxInputs): OtherTaxResult => {
 
     const inheritanceTaxYearly = totalInheritanceTax / 30; // Spread over 30 years
 
-    const totalOtherTax = consumptionTax + tobaccoTax + gasolineTax + propertyTax + carTax + inheritanceTaxYearly;
+    const totalOtherTax = consumptionTax + utilitiesTax + internetTax + tobaccoTax + gasolineTax + propertyTax + carTax + inheritanceTaxYearly;
 
     return {
         consumptionTax: Math.floor(consumptionTax),
+        utilitiesTax: Math.floor(utilitiesTax),
+        internetTax: Math.floor(internetTax),
         tobaccoTax: Math.floor(tobaccoTax),
         gasolineTax: Math.floor(gasolineTax),
         propertyTax: Math.floor(propertyTax),

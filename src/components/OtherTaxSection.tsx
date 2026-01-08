@@ -1,6 +1,6 @@
 import { OtherTaxInputs, CAR_TAX_RATES } from '@/utils/otherTaxCalculations';
 import NumberInput from './NumberInput';
-import { HelpCircle, Car, ShoppingCart, Flame, Fuel, Home, Landmark } from 'lucide-react';
+import { HelpCircle, Car, ShoppingCart, Flame, Fuel, Home, Landmark, Zap, Wifi } from 'lucide-react';
 
 interface OtherTaxSectionProps {
     inputs: OtherTaxInputs;
@@ -32,11 +32,11 @@ export default function OtherTaxSection({ inputs, setInputs }: OtherTaxSectionPr
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                {/* 1. Consumption Tax */}
+                {/* 1. Consumption Tax (Food/Misc) */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
                     <div className="flex items-center mb-3">
                         <ShoppingCart className="w-5 h-5 text-orange-500 mr-2" />
-                        <label className="text-sm font-bold text-slate-700">消費税</label>
+                        <label className="text-sm font-bold text-slate-700">食費・雑費の消費税</label>
                         <Tooltip text="実効税率9%で算出します（軽減税率8%と10%の混合想定）" />
                     </div>
                     <div className="mb-1 text-xs text-slate-500">毎月の食費・雑費</div>
@@ -46,6 +46,44 @@ export default function OtherTaxSection({ inputs, setInputs }: OtherTaxSectionPr
                             onChange={(v) => update('monthlyConsumptionSpending', v)}
                             className="block w-full px-3 py-2 border-slate-200 rounded-md text-sm"
                             placeholder="例: 100000"
+                        />
+                        <span className="absolute right-3 top-2 text-xs text-slate-400">円</span>
+                    </div>
+                </div>
+
+                {/* 1b. Utilities Tax */}
+                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center mb-3">
+                        <Zap className="w-5 h-5 text-yellow-500 mr-2" />
+                        <label className="text-sm font-bold text-slate-700">光熱費の消費税</label>
+                        <Tooltip text="電気・ガス・水道代に含まれる消費税(10%)を算出します" />
+                    </div>
+                    <div className="mb-1 text-xs text-slate-500">毎月の光熱費 (税込)</div>
+                    <div className="relative">
+                        <NumberInput
+                            value={inputs.monthlyUtilitiesCost}
+                            onChange={(v) => update('monthlyUtilitiesCost', v)}
+                            className="block w-full px-3 py-2 border-slate-200 rounded-md text-sm"
+                            placeholder="例: 20000"
+                        />
+                        <span className="absolute right-3 top-2 text-xs text-slate-400">円</span>
+                    </div>
+                </div>
+
+                {/* 1c. Internet/Phone Tax */}
+                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center mb-3">
+                        <Wifi className="w-5 h-5 text-cyan-500 mr-2" />
+                        <label className="text-sm font-bold text-slate-700">通信費の消費税</label>
+                        <Tooltip text="スマホ・ネット回線代に含まれる消費税(10%)を算出します" />
+                    </div>
+                    <div className="mb-1 text-xs text-slate-500">毎月の通信費 (税込)</div>
+                    <div className="relative">
+                        <NumberInput
+                            value={inputs.monthlyInternetCost}
+                            onChange={(v) => update('monthlyInternetCost', v)}
+                            className="block w-full px-3 py-2 border-slate-200 rounded-md text-sm"
+                            placeholder="例: 10000"
                         />
                         <span className="absolute right-3 top-2 text-xs text-slate-400">円</span>
                     </div>

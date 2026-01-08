@@ -32,6 +32,8 @@ export default function Home() {
   // Other Tax States
   const [otherTaxInputs, setOtherTaxInputs] = useState<OtherTaxInputs>({
     monthlyConsumptionSpending: 0,
+    monthlyUtilitiesCost: 0,
+    monthlyInternetCost: 0,
     dailyTobaccoSticks: 0,
     monthlyGasolineCost: 0,
     yearlyPropertyTax: 0,

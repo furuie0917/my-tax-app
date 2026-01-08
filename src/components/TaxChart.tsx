@@ -20,7 +20,9 @@ export default function TaxChart({ data, otherTaxData }: TaxChartProps) {
             '所得税 (Income Tax)',
             '住民税 (Resident Tax)',
             ...(otherTaxData ? [
-                '消費税 (Consumption)',
+                '食費等消費税 (Consumption)',
+                '光熱費消費税 (Utilities)',
+                '通信費消費税 (Internet)',
                 'たばこ税 (Tobacco)',
                 'ガソリン税 (Gasoline)',
                 '固定資産税 (Property)',
@@ -38,6 +40,8 @@ export default function TaxChart({ data, otherTaxData }: TaxChartProps) {
                     data.residentTax,
                     ...(otherTaxData ? [
                         otherTaxData.consumptionTax,
+                        otherTaxData.utilitiesTax,
+                        otherTaxData.internetTax,
                         otherTaxData.tobaccoTax,
                         otherTaxData.gasolineTax,
                         otherTaxData.propertyTax,
@@ -52,6 +56,8 @@ export default function TaxChart({ data, otherTaxData }: TaxChartProps) {
                     '#10b981', // Emerald-500 (Resident)
                     // New Colors
                     '#f97316', // Orange-500 (Consumption)
+                    '#facc15', // Yellow-400 (Utilities)
+                    '#0ea5e9', // Sky-500 (Internet)
                     '#64748b', // Slate-500 (Tobacco)
                     '#dc2626', // Red-600 (Gasoline)
                     '#8b5cf6', // Violet-500 (Property)
@@ -64,6 +70,8 @@ export default function TaxChart({ data, otherTaxData }: TaxChartProps) {
                     '#dc2626', // Red-600
                     '#059669', // Emerald-600
                     '#ea580c',
+                    '#eab308',
+                    '#0284c7',
                     '#475569',
                     '#b91c1c',
                     '#7c3aed',
