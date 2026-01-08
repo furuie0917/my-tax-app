@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { calculateTaxes } from '@/utils/taxCalculations';
 import InputSection from '@/components/InputSection';
 import SummaryCards from '@/components/SummaryCards';
+import LifePlanSection from '@/components/LifePlanSection';
 import TaxChart from '@/components/TaxChart';
 import { Calculator } from 'lucide-react';
 
@@ -134,6 +135,25 @@ export default function Home() {
 
         {/* Summary Cards */}
         <SummaryCards data={result} />
+
+        {/* Life Plan Advice Section */}
+        <LifePlanSection currentInputs={{
+          grossIncome: income,
+          idecoAmountYearly: idecoYearly,
+          furusatoAmountYearly: furusato,
+          hasSpouse,
+          numDependentsGen,
+          numDependentsSpecific,
+          lifeInsurancePremium: lifeInsurance,
+          earthquakeInsurancePremium: earthquakeInsurance,
+          miscIncome,
+          miscExpenses,
+          loanBalanceYearEnd: loanBalance,
+          loanStartPeriod,
+          socialInsuranceMode,
+          socialInsuranceManualAmount,
+          medicalExpenses
+        }} currentResult={result} />
 
         {/* Grid Layout for Chart and Details */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
