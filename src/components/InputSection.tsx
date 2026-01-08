@@ -32,6 +32,8 @@ interface InputSectionProps {
     setMedicalExpenses: (val: number) => void;
 }
 
+import NumberInput from './NumberInput';
+
 export default function InputSection({
     income, setIncome, ideco, setIdeco, furusato, setFurusato,
     hasSpouse, setHasSpouse, numDependentsGen, setNumDependentsGen,
@@ -56,10 +58,9 @@ export default function InputSection({
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">額面年収 (Annual Income)</label>
                         <div className="relative">
-                            <input
-                                type="number"
+                            <NumberInput
                                 value={income}
-                                onChange={(e) => setIncome(Number(e.target.value))}
+                                onChange={(val) => setIncome(val)}
                                 className="block w-full pl-4 pr-12 py-3 border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors bg-slate-50 text-lg font-semibold"
                                 placeholder="例: 5000000"
                             />
@@ -95,21 +96,19 @@ export default function InputSection({
 
                             <div>
                                 <label className="block text-xs font-medium text-slate-500 mb-1">一般扶養親族 (16-18, 23-69歳)</label>
-                                <input
-                                    type="number"
+                                <NumberInput
                                     min="0"
                                     value={numDependentsGen}
-                                    onChange={(e) => setNumDependentsGen(Number(e.target.value))}
+                                    onChange={(val) => setNumDependentsGen(val)}
                                     className="block w-24 pl-3 pr-3 py-2 border-gray-200 rounded-lg text-sm bg-slate-50"
                                 />
                             </div>
                             <div>
                                 <label className="block text-xs font-medium text-slate-500 mb-1">特定扶養親族 (19-22歳)</label>
-                                <input
-                                    type="number"
+                                <NumberInput
                                     min="0"
                                     value={numDependentsSpecific}
-                                    onChange={(e) => setNumDependentsSpecific(Number(e.target.value))}
+                                    onChange={(val) => setNumDependentsSpecific(val)}
                                     className="block w-24 pl-3 pr-3 py-2 border-gray-200 rounded-lg text-sm bg-slate-50"
                                 />
                             </div>
@@ -137,10 +136,9 @@ export default function InputSection({
 
                             {socialInsuranceMode === 'manual' && (
                                 <div className="relative animate-in fade-in slide-in-from-left-2">
-                                    <input
-                                        type="number"
+                                    <NumberInput
                                         value={socialInsuranceManualAmount}
-                                        onChange={(e) => setSocialInsuranceManualAmount(Number(e.target.value))}
+                                        onChange={(val) => setSocialInsuranceManualAmount(val)}
                                         className="block w-40 pl-3 pr-10 py-2 border-gray-200 rounded-lg text-sm bg-slate-50"
                                         placeholder="入力してください"
                                     />
@@ -157,10 +155,9 @@ export default function InputSection({
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">生命保険料 (年間支払額)</label>
                             <div className="relative">
-                                <input
-                                    type="number"
+                                <NumberInput
                                     value={lifeInsurance}
-                                    onChange={(e) => setLifeInsurance(Number(e.target.value))}
+                                    onChange={(val) => setLifeInsurance(val)}
                                     className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
                                 />
                                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -171,10 +168,9 @@ export default function InputSection({
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">地震保険料 (年間支払額)</label>
                             <div className="relative">
-                                <input
-                                    type="number"
+                                <NumberInput
                                     value={earthquakeInsurance}
-                                    onChange={(e) => setEarthquakeInsurance(Number(e.target.value))}
+                                    onChange={(val) => setEarthquakeInsurance(val)}
                                     className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
                                 />
                                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -185,10 +181,9 @@ export default function InputSection({
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">医療費 (年間総額)</label>
                             <div className="relative">
-                                <input
-                                    type="number"
+                                <NumberInput
                                     value={medicalExpenses}
-                                    onChange={(e) => setMedicalExpenses(Number(e.target.value))}
+                                    onChange={(val) => setMedicalExpenses(val)}
                                     className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
                                     placeholder="0"
                                 />
@@ -207,10 +202,9 @@ export default function InputSection({
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">年末借入残高</label>
                                 <div className="relative w-full">
-                                    <input
-                                        type="number"
+                                    <NumberInput
                                         value={loanBalance}
-                                        onChange={(e) => setLoanBalance(Number(e.target.value))}
+                                        onChange={(val) => setLoanBalance(val)}
                                         className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
                                         placeholder="例: 30000000"
                                     />
@@ -252,10 +246,9 @@ export default function InputSection({
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">iDeCo 掛金 (月額)</label>
                         <div className="relative">
-                            <input
-                                type="number"
+                            <NumberInput
                                 value={ideco}
-                                onChange={(e) => setIdeco(Number(e.target.value))}
+                                onChange={(val) => setIdeco(val)}
                                 className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
                             />
                             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -267,10 +260,9 @@ export default function InputSection({
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">ふるさと納税 (年間)</label>
                         <div className="relative">
-                            <input
-                                type="number"
+                            <NumberInput
                                 value={furusato}
-                                onChange={(e) => setFurusato(Number(e.target.value))}
+                                onChange={(val) => setFurusato(val)}
                                 className="block w-full pl-4 pr-12 py-2 border-gray-200 rounded-lg bg-slate-50"
                             />
                             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -283,20 +275,18 @@ export default function InputSection({
                         <label className="block text-sm font-medium text-slate-700 mb-2">雑所得 (副業など)</label>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
-                                <input
-                                    type="number"
+                                <NumberInput
                                     value={miscIncome}
-                                    onChange={(e) => setMiscIncome(Number(e.target.value))}
+                                    onChange={(val) => setMiscIncome(val)}
                                     className="block w-full px-3 py-2 border-gray-200 rounded-lg bg-slate-50 text-sm"
                                     placeholder="収入"
                                 />
                                 <p className="text-xs text-slate-400 mt-1">収入金額</p>
                             </div>
                             <div>
-                                <input
-                                    type="number"
+                                <NumberInput
                                     value={miscExpenses}
-                                    onChange={(e) => setMiscExpenses(Number(e.target.value))}
+                                    onChange={(val) => setMiscExpenses(val)}
                                     className="block w-full px-3 py-2 border-gray-200 rounded-lg bg-slate-50 text-sm"
                                     placeholder="経費"
                                 />

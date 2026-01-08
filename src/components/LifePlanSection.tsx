@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import { TaxInputs, TaxResult } from '@/utils/taxCalculations';
 import { calculateChildGrowthSimulation, compareLoanVsNisa } from '@/utils/lifePlanCalculations';
 import { TrendingUp, School, PiggyBank, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import NumberInput from './NumberInput';
 
 interface LifePlanSectionProps {
     currentInputs: TaxInputs;
@@ -65,10 +66,9 @@ export default function LifePlanSection({ currentInputs, currentResult }: LifePl
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-500 mb-1">毎月の余剰資金</label>
                                     <div className="relative">
-                                        <input
-                                            type="number"
+                                        <NumberInput
                                             value={monthlySurplus}
-                                            onChange={(e) => setMonthlySurplus(Number(e.target.value))}
+                                            onChange={(val) => setMonthlySurplus(val)}
                                             className="block w-full px-3 py-2 border-slate-200 rounded-md text-sm"
                                         />
                                         <span className="absolute right-3 top-2 text-xs text-slate-400">円</span>
@@ -147,11 +147,10 @@ export default function LifePlanSection({ currentInputs, currentResult }: LifePl
                 <div className="flex items-center space-x-4 mb-6 bg-orange-50 p-4 rounded-lg inline-block">
                     <label className="text-sm font-bold text-slate-700">お子様の現在の年齢:</label>
                     <div className="flex items-center">
-                        <input
-                            type="number"
+                        <NumberInput
                             min="0" max="18"
                             value={childAge}
-                            onChange={(e) => setChildAge(Number(e.target.value))}
+                            onChange={(val) => setChildAge(val)}
                             className="w-16 px-2 py-1 border border-orange-200 rounded text-center font-bold text-slate-700"
                         />
                         <span className="ml-2 text-sm text-slate-600">歳</span>
