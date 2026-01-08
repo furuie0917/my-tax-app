@@ -1,61 +1,6 @@
 
 import { calculateTaxes, TaxInputs, TaxResult } from './taxCalculations';
 
-// --- Furusato Nozei Limit Calculator ---
-
-/**
- * Calculates the maximum Furusato Nozei donation amount effectively (2000 yen burden).
- * Uses a binary search approach finding the point where:
- * TaxReduction(amount) = amount - 2000
- */
-export const calculateFurusatoLimit = (baseInputs: TaxInputs): number => {
-    // We need to find `amount` such that:
-    // (BaseTax - TaxWithAmount) >= amount - 2000
-    // If (BaseTax - TaxWithAmount) < amount - 2000, we are "losing" money (limit exceeded).
-
-    // Clean inputs: set furusato to 0 for baseline
-    const inputs0 = { ...baseInputs, furusatoAmountYearly: 0 };
-    const res0 = calculateTaxes(inputs0);
-    const totalTax0 = res0.incomeTax + res0.residentTax;
-
-    let low = 0;
-    let high = 1000000; // Cap search at 1M yen for safety/performance
-    let limit = 0;
-
-    // Binary search for the highest amount where Benefit >= Cost
-    // Precision: 1000 yen
-    while (high - low > 1000) {
-        const mid = Math.floor((low + high) / 2);
-        const inputsMid = { ...baseInputs, furusatoAmountYearly: mid };
-        const resMid = calculateTaxes(inputsMid);
-        const totalTaxMid = resMid.incomeTax + resMid.residentTax;
-
-        const taxReduction = totalTax0 - totalTaxMid;
-        const cost = mid - 2000;
-
-        if (cost <= 0) {
-            // Should not happen if mid > 2000. If mid <= 2000, technically limit is infinite? 
-            // No, if mid <= 2000, cost is 0 or neg (gain). But we want max limit.
-            // If mid is small, tax reduction is small.
-            low = mid;
-            continue;
-        }
-
-        if (taxReduction >= cost) {
-            // It's worth it, try higher
-            limit = mid;
-            low = mid;
-        } else {
-            // Not worth it, too high
-            high = mid;
-        }
-    }
-
-    // Round down to nearest 1000
-    return Math.floor(limit / 1000) * 1000;
-};
-
-
 // --- Child Growth Simulator ---
 
 export interface ChildGrowthPoint {

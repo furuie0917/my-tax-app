@@ -1,7 +1,7 @@
 
 import { useState, useMemo } from 'react';
 import { TaxInputs, TaxResult } from '@/utils/taxCalculations';
-import { calculateFurusatoLimit, calculateChildGrowthSimulation, compareLoanVsNisa } from '@/utils/lifePlanCalculations';
+import { calculateChildGrowthSimulation, compareLoanVsNisa } from '@/utils/lifePlanCalculations';
 import { TrendingUp, School, PiggyBank, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface LifePlanSectionProps {
@@ -16,11 +16,6 @@ export default function LifePlanSection({ currentInputs, currentResult }: LifePl
     const [monthlySurplus, setMonthlySurplus] = useState<number>(30000); // 30,000 yen default
 
     // --- Calculations ---
-
-    // 1. Furusato
-    const furusatoLimit = useMemo(() => {
-        return calculateFurusatoLimit(currentInputs);
-    }, [currentInputs]);
 
     // 2. Child Growth
     const childGrowthData = useMemo(() => {
@@ -55,25 +50,6 @@ export default function LifePlanSection({ currentInputs, currentResult }: LifePl
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                {/* 1. Furusato Limit Card */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col">
-                    <h3 className="text-md font-bold text-slate-700 mb-4 flex items-center">
-                        <span className="text-rose-500 mr-2">🎁</span>
-                        ふるさと納税 上限額目安
-                    </h3>
-
-                    <div className="flex-1 flex flex-col justify-center items-center text-center">
-                        <span className="text-sm text-slate-500 mb-1">自己負担2,000円で済む上限</span>
-                        <div className="text-3xl font-extrabold text-slate-800 my-2">
-                            {new Intl.NumberFormat('ja-JP').format(furusatoLimit)}
-                            <span className="text-sm font-normal text-slate-500 ml-1">円</span>
-                        </div>
-                        <p className="text-xs text-slate-400 mt-2 px-4">
-                            ※ 住宅ローン控除や2025年改正を考慮した独自の試算です。詳細な上限は各サイトのシミュレーターも併用ください。
-                        </p>
-                    </div>
-                </div>
 
                 {/* 2. Loan vs NISA Card */}
                 {currentInputs.loanBalanceYearEnd && currentInputs.loanBalanceYearEnd > 0 ? (
